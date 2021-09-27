@@ -1,0 +1,122 @@
+<odoo>
+    <data>
+        <report
+            id="certification_report"
+            model="account.move"
+            string="Certificacion"
+            name="grow_certification_tax.certification"
+            report_type="qweb-pdf"
+            menu="False"
+            
+        />
+        
+        <template id="certification">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                      <div class="page">
+                          <div class="row mb16">
+                            <div class="col-12 text-right">
+                                <span t-esc="o.date_format_long()"/><br/>
+                          	<span>Santo Domingo, Rep. Dom.</span>
+                            </div>
+                          </div>
+                            <div class="row mb32">
+                                <div class="col-12">
+                                    <span><b>Señores</b></span><br/>
+                                    <span><b>Direccion General de Impuestos Internos</b></span><br/>
+                                    <span>ciudad.-</span>
+                                </div>
+                            </div>
+                               <t t-set="normas" t-value="o.get_certification_data()"/>
+                            <div class="row mb64" >
+                                <div class="col-12">
+                                    <h5 class="text-center"><b>CERTIFICACION DE RETENCION</b></h5>
+                                    <p class="text-justify">
+                                      Por medio de la presente certificamos que hemos realizado las retenciones detalladas
+                                      a, <strong t-field='o.partner_id.name'/> 
+                                      registrado con 
+                                      <span>
+                                        <t t-if="len(o.partner_id.vat) > 9">
+                                          la <strong>CEDULA: </strong>
+                                        </t>
+                                        <t t-if="len(o.partner_id.vat) == 9">
+                                         el <strong>RNC: </strong>
+                                        </t>
+                                        <strong t-field="o.partner_id.vat"/>
+                                      </span> 
+                                      por concepto de retencion segun la 
+                                      <strong t-esc="' y '.join([n.norm for n in normas])"/> 
+                                      el dia <span t-esc="o.date_format_long(o.payment_date)"/>.
+                                    </p>
+                                   
+                                   
+                                </div>
+                            </div>
+                            <div class="row mb32">
+                                
+                                <div class="col-12">
+                                 
+                                    <table class="table table-sm" style="font-size:small;">
+                                        <tr>
+                                            <th colspan="4"/>
+                                            <th t-foreach="normas" t-as="n">
+                                                <t t-esc="n.norm"/>
+                                            </th>
+                                            <th/>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <th>FECHA</th>
+                                            <th>NCF</th>
+                                            <th>VALOR FACTURA</th>
+                                            <th>ITBIS FACTURADO</th>
+                                            <th t-foreach="normas" t-as="n">
+                                                <t t-esc="n.report_description"/>
+                                            </th>
+                                            <th>VALOR A PAGAR</th>
+                                        </tr>
+                                        
+                                        <tbody>
+                                            <tr>
+                                                <td><span t-field="o.invoice_date"/></td>
+                                                <td><span t-field="o.l10n_latam_document_number"/></td>
+                                                <td><span t-field="o.amount_untaxed"/></td>
+                                                <td><span t-field="o.invoiced_itbis"/></td>
+						<t t-set="apagar" t-value="0"/>
+                                                <td t-foreach="normas" t-as="n">
+						  <t t-set="apagar" t-value="apagar + n_value"/>
+                                                  <span t-esc="n_value" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                                  </td>
+						  <td>
+                                                      <span t-esc="o.amount_untaxed + o.invoiced_itbis - apagar" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+						  </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </div>
+                                
+                                <div class="mt64" >
+                                    <div class="">
+                                        <p>Atentamente,</p>
+                                        <br/>
+                                        <br/>
+                                        <!--<br/>-->
+                                        <table>
+                                            <tr>
+                                                <td class="text-center" style="border-top: 1px solid black;"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Departamento Administrativo</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                      </div> 
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
