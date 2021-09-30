@@ -239,11 +239,20 @@ class LandedCost(models.Model):
         self.cost_summary_ids = lines_data
 
 
+
+split_method = [
+    ('equal', 'Equal'),
+    ('by_quantity', 'By Quantity'),
+    ('by_current_cost_price', 'By Current Cost'),
+    ('by_weight', 'By Weight'),
+    ('by_volume', 'By Volume'),
+    ('arancel', 'Arancel')
+]
     
 class LandedCostLine(models.Model):
     _inherit = 'stock.landed.cost.lines'
 
-    split_method = fields.Selection(selection_add=[('arancel', 'Arancel')])
+    split_method = fields.Selection(split_method)
     arancel_product_id = fields.Many2one('product.product')
     move_id = fields.Many2one('stock.move', string='Movimiento de Existencia')
 
