@@ -1,0 +1,77 @@
+<odoo>
+  <data>
+    <report
+        id="report_landed_cost_xlsx_report"
+        model="stock.landed.cost"
+        string="Coste en Destino (XLSX)"
+        report_type="xlsx"
+        name="stock_landed_cost_extra.report_landed_cost_xlsx"
+        file="CostesEnDestino"
+    	attachment_use="False"/>
+
+    <record model="ir.ui.view" id="view_stock_landed_cost_form">
+      <field name="name">view_stock_landed_cost_form</field>
+      <field name="model">stock.landed.cost</field>
+      <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='picking_ids']" position="after">
+            <button name="get_product" string="Cargar Productos" 
+                    type="object" class="btn-link oe_edit_only" />
+        </xpath>
+          
+        <xpath expr="//field[@name='cost_lines']/tree/field[@name='product_id']" position="after">
+            <field name="arancel_product_id" invisible="1"/>
+            <field name="move_id" invisible="1"/>
+        </xpath>
+          
+        <xpath expr="//sheet/notebook/page[1]" position="after">
+            <page string="Productos Exentos">
+                <p class="oe_grey">Especifique que tipo de Costo no va a ser incluido al producto.
+                	<button name="compute_landed_cost" string="Calcular" type="object"/> 
+                </p>
+                <field name="no_cost_lines">
+                  <tree editable="bottom">
+                      <field name="cost_id" invisible="1"/>
+                      <field name="cost_line_id" domain="[('cost_id', '=', parent.id)]"/>
+                      <field name="product_list_id" domain="[('cost_id', '=', parent.id)]"/>
+                  </tree>
+                </field>
+            </page>
+        </xpath>
+
+        <xpath expr="//sheet/notebook/page[1]" position="before">
+            <page string='Listado de Productos'>
+                <field name="product_list_ids" >
+                  <tree editable="top">
+                      <field name="cost_id" invisible="1"/>
+                      <field name="picking_id"/>
+                      <field name="name" invisible="1"/>
+                      <field name="product_id" readonly="1"/>
+                      <field name="arancel"/>
+                      <field name="move_id" invisible="1"/>
+                  </tree>
+                </field>
+                <button name="set_aranceles" string="Cargar Arancel" type="object"/>
+            </page>
+        </xpath>
+
+        <xpath expr="//sheet/notebook" position="inside">
+            <page string='Resumen Ajuste de Valoracion'>
+                <field name="cost_summary_ids" readonly='0'>
+                  <tree>
+                      <field name="cost_id" invisible="1"/>
+                      <field name="product_id"/>
+                      <field name="quantity"/>
+                      <field name="former_cost"/>
+                      <field name="additional_cost"/>
+                      <field name="final_cost"/>
+                      <field name="cost_unit"/>
+                  </tree>
+                </field>
+            </page>
+        </xpath>
+      </field>
+    </record>
+
+  </data>
+</odoo>
