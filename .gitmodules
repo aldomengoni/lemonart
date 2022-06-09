@@ -2,3 +2,8 @@
 	path = OCA/reporting-engine
 	url = git@github.com:OCA/reporting-engine.git
 	branch = 14.0
+
+[submodule "crbll0/l10n-dominicana"]
+	path = crbll0/l10n-dominicana
+	url = git@github.com:crbll0/l10n-dominicana.git
+	branch = 14.0-pos
